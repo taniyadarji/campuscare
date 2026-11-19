@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusCare | College Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f5fb;color:#26304a}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#7568ef,#d77dbb,#78c7ed)}
+.login{width:min(420px,100%);background:white;border-radius:24px;padding:30px;box-shadow:0 20px 50px #28205b30}
+.logo{font-size:25px;font-weight:bold;color:#6758e8;margin-bottom:25px}
+.login h1{margin-bottom:8px}
+.sub{color:#78809b;font-size:13px;line-height:1.5}
+.field{margin:17px 0}
+.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
+.field input,.field select,.search{width:100%;padding:13px;border:1px solid #e8e9f2;border-radius:11px;outline:none}
+.primary{background:linear-gradient(100deg,#6758e8,#9b70e8);color:white;padding:13px 18px;border-radius:11px;font-weight:bold}
+.full{width:100%}
+.hint{margin-top:17px;background:#f3f1ff;padding:13px;border-radius:10px;color:#6256b5;font-size:12px;line-height:1.7}
+.app{display:none;min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:230px;background:white;padding:25px 17px;border-right:1px solid #eceefa}
+.brand{font-size:23px;font-weight:bold;color:#6758e8;padding:0 8px 25px}
+.nav button{width:100%;display:block;text-align:left;background:transparent;padding:13px;border-radius:11px;color:#737b98;font-weight:bold;margin:4px 0}
+.nav button.active,.nav button:hover{background:#f0efff;color:#6758e8}
+.main{margin-left:230px;padding:28px;max-width:1500px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}
+.top h1{font-size:25px}
+.profile{background:white;padding:12px;border-radius:12px;font-size:13px}
+.page{display:none}
+.page.active{display:block}
+.welcome{background:linear-gradient(110deg,#6b5ce7,#9b70e8,#e77eb0);color:white;border-radius:20px;padding:26px;margin-bottom:20px}
+.welcome h2{margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:20px 0}
+.stat,.panel{background:white;border:1px solid #eceefa;border-radius:17px;padding:19px}
+.stat span{color:#78809b;font-size:13px}
+.stat strong{display:block;font-size:28px;margin-top:12px}
+.columns{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+.panel h3{margin-bottom:15px}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.quick button{padding:15px;text-align:left;border-radius:12px;background:#f4f2ff;color:#5145b6;font-weight:bold}
+.quick span{display:block;font-size:21px;margin-bottom:8px}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:15px 0}
+.toolbar .search{max-width:320px}
+.table-wrap{overflow:auto;background:white;border:1px solid #eceefa;border-radius:15px}
+table{border-collapse:collapse;width:100%;min-width:600px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid #eceefa;font-size:13px}
+th{color:#78809b;background:#fafaff;font-size:11px}
+.actions button{background:#f0efff;color:#6758e8;padding:7px 9px;border-radius:7px;margin-right:4px}
+.actions .del{background:#fff0f1;color:#e45c70}
+.empty{text-align:center;color:#78809b;padding:25px}
+.notice{padding:13px 0;border-bottom:1px solid #eceefa}
+.notice p{font-size:13px;color:#78809b;margin:7px 0}
+.pill{background:#e8f8f1;color:#178b66;padding:5px 9px;border-radius:20px;font-size:11px}
+.modal-back{display:none;position:fixed;inset:0;background:#16152b70;z-index:5;place-items:center;padding:15px}
+.modal-back.show{display:grid}
+.modal{background:white;border-radius:18px;padding:23px;width:min(440px,100%);max-height:90vh;overflow:auto}
+.modal h3{margin-bottom:15px}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.secondary{background:#f0f1f8;padding:12px 16px;border-radius:10px}
+.toast{position:fixed;bottom:20px;right:20px;background:#252747;color:white;padding:13px 18px;border-radius:10px;display:none;z-index:10}
+.menu-toggle{display:none;background:white;padding:10px;border-radius:9px}
+@media(max-width:950px){.stats{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}}
+@media(max-width:650px){
+.sidebar{display:none;width:230px;z-index:4}
+.sidebar.open{display:block;box-shadow:0 0 0 100vmax #10102555}
+.main{margin:0;padding:16px}
+.menu-toggle{display:block}
+.top{gap:10px}
+.top h1{font-size:20px}
+.profile{margin-left:auto}
+.welcome{padding:20px}
+.stats{gap:9px}
+.stat{padding:13px}
+.stat strong{font-size:23px}
+.toolbar{flex-direction:column;align-items:stretch}
+.toolbar .search{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginScreen">
+ <div class="login">
+  <div class="logo">✦ CampusCare</div>
+  <h1>Welcome Back!</h1>
+  <p class="sub">Your college, all in one place.</p>
+  <div class="field">
+   <label>Username</label>
+   <input id="username" value="admin" placeholder="Enter username">
+  </div>
+  <div class="field">
+   <label>Password</label>
+   <input id="password" type="password" value="admin123" placeholder="Enter password">
+  </div>
+  <button class="primary full" onclick="login()">Sign In →</button>
+  <div class="hint">
+   <b>Demo Login</b><br>
+   Admin: admin / admin123<br>
+   Student: student / student123
+  </div>
+ </div>
+</div>
+
+<div class="app" id="app">
+ <aside class="sidebar" id="sidebar">
+  <div class="brand">✦ CampusCare</div>
+  <nav class="nav">
+   <button class="active" data-page="dashboard" onclick="go('dashboard')">▦ Dashboard</button>
+   <button data-page="students" onclick="go('students')">♙ Students</button>
+   <button data-page="attendance" onclick="go('attendance')">✓ Attendance</button>
+   <button data-page="notices" onclick="go('notices')">▤ Notices</button>
+   <button data-page="fees" onclick="go('fees')">₹ Fees</button>
+  </nav>
+ </aside>
+
+ <main class="main">
+  <header class="top">
+   <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+   <div><h1 id="pageTitle">Dashboard</h1><p class="sub">Your college overview</p></div>
+   <div class="profile"><span id="who">Admin</span>
+    <button onclick="logout()" style="background:none;margin-left:8px">↪</button>
+   </div>
+  </header>
+
+  <section class="page active" id="dashboard">
+   <div class="welcome">
+    <h2>Hello, Welcome to CampusCare! 👋</h2>
+    <p>Manage your campus with ease.</p>
+   </div>
+   <div class="stats">
+    <div class="stat"><span>Total Students</span><strong id="sCount">0</strong></div>
+    <div class="stat"><span>Present Today</span><strong id="aCount">0</strong></div>
+    <div class="stat"><span>Total Notices</span><strong id="nCount">0</strong></div>
+    <div class="stat"><span>Fee Records</span><strong id="fCount">0</strong></div>
+   </div>
+   <div class="columns">
+    <div class="panel">
+     <h3>Quick Actions</h3>
+     <div class="quick">
+      <button onclick="go('students')"><span>＋</span>Add Student</button>
+      <button onclick="go('attendance')"><span>✓</span>Attendance</button>
+      <button onclick="go('notices')"><span>✎</span>Post Notice</button>
+      <button onclick="go('fees')"><span>₹</span>Manage Fees</button>
+     </div>
+    </div>
+    <div class="panel"><h3>Latest Notices</h3><div id="latestNotices"></div></div>
+   </div>
+  </section>
+
+  <section class="page" id="students">
+   <div class="toolbar">
+    <input class="search" id="studentSearch" placeholder="Search student..." oninput="renderStudents()">
+    <button class="primary" onclick="openStudent()">＋ Add Student</button>
+   </div>
+   <div class="table-wrap"><table>
+    <thead><tr><th>Roll No.</th><th>Name</th><th>Course</th><th>Year</th><th>Phone</th><th>Actions</th></tr></thead>
+    <tbody id="studentRows"></tbody>
+   </table></div>
+  </section>
+
+  <section class="page" id="attendance">
+   <div class="toolbar">
+    <div><b>Daily Attendance</b><p class="sub">Mark student attendance</p></div>
+    <input type="date" class="search" id="attDate">
+   </div>
+   <div class="table-wrap"><table>
+    <thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Status</th></tr></thead>
+    <tbody id="attRows"></tbody>
+   </table></div>
+  </section>
+
+  <section class="page" id="notices">
+   <div class="toolbar"><span class="sub">Campus announcements</span>
+    <button class="primary" onclick="openNotice()">＋ Add Notice</button>
+   </div>
+   <div class="panel" id="noticeList"></div>
+  </section>
+
+  <section class="page" id="fees">
+   <div class="toolbar">
+    <input class="search" id="feeSearch" placeholder="Search student..." oninput="renderFees()">
+    <button class="primary" onclick="openFee()">＋ Add Fee Record</button>
+   </div>
+   <div class="table-wrap"><table>
+    <thead><tr><th>Student</th><th>Roll No.</th><th>Total Fee</th><th>Paid</th><th>Balance</th><th>Actions</th></tr></thead>
+    <tbody id="feeRows"></tbody>
+   </table></div>
+  </section>
+ </main>
+</div>
+
+<div class="modal-back" id="modalBack">
+ <div class="modal">
+  <h3 id="modalTitle">Add Details</h3>
+  <div id="modalBody"></div>
+  <div class="modal-actions">
+   <button class="secondary" onclick="closeModal()">Cancel</button>
+   <button class="primary" id="modalSave">Save</button>
+  </div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+let students=JSON.parse(localStorage.getItem('cc_students')||'[]');
+let notices=JSON.parse(localStorage.getItem('cc_notices')||'[]');
+let fees=JSON.parse(localStorage.getItem('cc_fees')||'[]');
+let attendance=JSON.parse(localStorage.getItem('cc_attendance')||'{}');
+let role='admin';
+
+function save(){
+ localStorage.setItem('cc_students',JSON.stringify(students));
+ localStorage.setItem('cc_notices',JSON.stringify(notices));
+ localStorage.setItem('cc_fees',JSON.stringify(fees));
+ localStorage.setItem('cc_attendance',JSON.stringify(attendance));
+ updateStats();
+}
+function toast(msg){
+ $('toast').textContent=msg;
+ $('toast').style.display='block';
+ setTimeout(()=>$('toast').style.display='none',2200);
+}
+function login(){
+ let u=$('username').value.trim(),p=$('password').value;
+ if((u==='admin'&&p==='admin123')||(u==='student'&&p==='student123')){
+  role=u;
+  $('loginScreen').style.display='none';
+  $('app').style.display='block';
+  $('who').textContent=u==='admin'?'Admin':'Student';
+  if(role==='student'){
+   document.querySelectorAll('.nav button').forEach(b=>{
+    if(!['dashboard','notices','attendance'].includes(b.dataset.page))b.style.display='none';
+   });
+   document.querySelectorAll('.toolbar .primary').forEach(b=>b.style.display='none');
+  }
+  renderAll();
+ }else toast('Incorrect login details');
+}
+function logout(){location.reload()}
+function go(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(page).classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ $('pageTitle').textContent=page.charAt(0).toUpperCase()+page.slice(1);
+ $('sidebar').classList.remove('open');
+}
+function updateStats(){
+ $('sCount').textContent=students.length;
+ let d=$('attDate').value||new Date().toISOString().slice(0,10);
+ $('aCount').textContent=Object.values(attendance[d]||{}).filter(x=>x==='Present').length;
+ $('nCount').textContent=notices.length;
+ $('fCount').textContent=fees.length;
+}
+function esc(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function renderStudents(){
+ let q=($('studentSearch').value||'').toLowerCase();
+ let arr=students.filter(s=>(s.name+s.roll+s.course).toLowerCase().includes(q));
+ $('studentRows').innerHTML=arr.length?arr.map(s=>`
+ <tr><td>${esc(s.roll)}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.course)}</td><td>${esc(s.year)}</td><td>${esc(s.phone||'-')}</td>
+ <td class="actions"><button onclick="openStudent('${s.id}')">Edit</button><button class="del" onclick="delStudent('${s.id}')">Delete</button></td></tr>`).join(''):
+ '<tr><td colspan="6" class="empty">No students found. Add your first student.</td></tr>';
+}
+function openStudent(id){
+ let s=students.find(x=>x.id===id)||{};
+ modal('Student Details',`
+ <div class="field"><label>Full Name</label><input id="mName" value="${esc(s.name||'')}"></div>
+ <div class="field"><label>Roll Number</label><input id="mRoll" value="${esc(s.roll||'')}"></div>
+ <div class="field"><label>Course</label><input id="mCourse" value="${esc(s.course||'Computer Engineering')}"></div>
+ <div class="field"><label>Year / Semester</label><input id="mYear" value="${esc(s.year||'')}"></div>
+ <div class="field"><label>Phone</label><input id="mPhone" value="${esc(s.phone||'')}"></div>`,
+ ()=>{
+  let v={id:id||crypto.randomUUID(),name:$('mName').value.trim(),roll:$('mRoll').value.trim(),course:$('mCourse').value.trim(),year:$('mYear').value.trim(),phone:$('mPhone').value.trim()};
+  if(!v.name||!v.roll)return toast('Name and roll number are required');
+  if(id)students=students.map(x=>x.id===id?v:x);else students.push(v);
+  save();renderAll();closeModal();toast('Student saved');
+ });
+}
+function delStudent(id){
+ if(!confirm('Delete this student?'))return;
+ students=students.filter(s=>s.id!==id);
+ fees=fees.filter(f=>f.sid!==id);
+ save();renderAll();toast('Student deleted');
+}
+function renderAttendance(){
+ let d=$('attDate').value||new Date().toISOString().slice(0,10);
+ attendance[d]=attendance[d]||{};
+ $('attRows').innerHTML=students.length?students.map(s=>`
+ <tr><td>${esc(s.roll)}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.course)}</td>
+ <td><select class="search" style="max-width:150px" onchange="setAttendance('${s.id}',this.value)">
+ <option value="" ${!attendance[d][s.id]?'selected':''}>Select</option>
+ <option ${attendance[d][s.id]==='Present'?'selected':''}>Present</option>
+ <option ${attendance[d][s.id]==='Absent'?'selected':''}>Absent</option>
+ </select></td></tr>`).join(''):
+ '<tr><td colspan="4" class="empty">Add students first.</td></tr>';
+ updateStats();
+}
+function setAttendance(id,v){
+ let d=$('attDate').value;
+ attendance[d]=attendance[d]||{};
+ attendance[d][id]=v;
+ save();toast('Attendance updated');
+}
+function openNotice(id){
+ let n=notices.find(x=>x.id===id)||{};
+ modal('Notice Details',`
+ <div class="field"><label>Title</label><input id="mTitle" value="${esc(n.title||'')}"></div>
+ <div class="field"><label>Message</label><input id="mMessage" value="${esc(n.message||'')}"></div>`,
+ ()=>{
+  let v={id:id||crypto.randomUUID(),title:$('mTitle').value.trim(),message:$('mMessage').value.trim(),date:new Date().toLocaleDateString()};
+  if(!v.title)return toast('Enter a title');
+  if(id)notices=notices.map(x=>x.id===id?v:x);else notices.unshift(v);
+  save();renderAll();closeModal();toast('Notice published');
+ });
+}
+function renderNotices(){
+ $('noticeList').innerHTML=notices.length?notices.map(n=>`
+ <div class="notice"><b>${esc(n.title)}</b><p>${esc(n.message)}</p><small class="sub">${esc(n.date||'')}</small>
+ <span class="actions" style="float:right"><button onclick="openNotice('${n.id}')">Edit</button><button class="del" onclick="delNotice('${n.id}')">Delete</button></span></div>`).join(''):'<div class="empty">No notices yet.</div>';
+ $('latestNotices').innerHTML=notices.slice(0,3).map(n=>`<div class="notice"><b>${esc(n.title)}</b><p>${esc(n.message)}</p></div>`).join('')||'<p class="sub">No announcements yet.</p>';
+}
+function delNotice(id){
+ if(!confirm('Delete this notice?'))return;
+ notices=notices.filter(n=>n.id!==id);save();renderAll();
+}
+function openFee(id){
+ let f=fees.find(x=>x.id===id)||{};
+ modal('Fee Record',`
+ <div class="field"><label>Student</label><select id="mStudent">${students.map(s=>`<option value="${s.id}" ${f.sid===s.id?'selected':''}>${esc(s.name)} (${esc(s.roll)})</option>`).join('')}</select></div>
+ <div class="field"><label>Total Fee (₹)</label><input id="mTotal" type="number" min="0" value="${f.total||''}"></div>
+ <div class="field"><label>Paid Amount (₹)</label><input id="mPaid" type="number" min="0" value="${f.paid||''}"></div>`,
+ ()=>{
+  let v={id:id||crypto.randomUUID(),sid:$('mStudent').value,total:Number($('mTotal').value),paid:Number($('mPaid').value)};
+  if(!v.sid)return toast('Add a student first');
+  if(v.paid>v.total)return toast('Paid amount cannot exceed total fee');
+  if(id)fees=fees.map(x=>x.id===id?v:x);else fees.push(v);
+  save();renderAll();closeModal();toast('Fee record saved');
+ });
+}
+function renderFees(){
+ let q=($('feeSearch').value||'').toLowerCase();
+ let arr=fees.filter(f=>{
+  let s=students.find(x=>x.id===f.sid);
+  return s&&(s.name+s.roll).toLowerCase().includes(q);
+ });
+ $('feeRows').innerHTML=arr.length?arr.map(f=>{
+  let s=students.find(x=>x.id===f.sid);
+  return `<tr><td>${esc(s?.name||'')}</td><td>${esc(s?.roll||'')}</td><td>₹${f.total}</td><td>₹${f.paid}</td><td><span class="pill">₹${f.total-f.paid}</span></td>
+  <td class="actions"><button onclick="openFee('${f.id}')">Edit</button><button class="del" onclick="delFee('${f.id}')">Delete</button></td></tr>`;
+ }).join(''):'<tr><td colspan="6" class="empty">No fee records found.</td></tr>';
+}
+function delFee(id){
+ if(!confirm('Delete this fee record?'))return;
+ fees=fees.filter(f=>f.id!==id);save();renderAll();
+}
+function modal(title,body,fn){
+ $('modalTitle').textContent=title;
+ $('modalBody').innerHTML=body;
+ $('modalSave').onclick=fn;
+ $('modalBack').classList.add('show');
+}
+function closeModal(){$('modalBack').classList.remove('show')}
+function renderAll(){
+ renderStudents();renderAttendance();renderNotices();renderFees();updateStats();
+}
+$('attDate').value=new Date().toISOString().slice(0,10);
+$('attDate').addEventListener('change',renderAttendance);
+</script>
+</body>
+</html>
